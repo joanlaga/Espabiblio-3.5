@@ -1,10 +1,12 @@
 <?php
+
+  require_once("../shared/common.php");
+  require_once("../shared/logincheck.php");
+
   $tab = "cataloging";
   $nav = "bulk_delete";
   $helpPage = "cataloging";
 
-  require_once("../shared/common.php");
-  require_once("../shared/logincheck.php");
   require_once("../shared/header.php");
   require_once("../functions/searchFuncs.php");
   require_once("../classes/BiblioQuery.php");

@@ -136,7 +136,7 @@ echo '</br>';echo '$_REQUEST ';echo '<pre>';var_dump ($_REQUEST );echo '</pre>';
 						if (mb_strlen($langs[$lang]) < 50) {
 							echo ('<input type="text" name="trans['.$index.'][mv] " value="'. $langs[$lang] .'" size="50" class="text" />' );
 						} else {
-							$rows = @round(mb_strlen($langs[$lang] / 50)) +1 ;
+							$rows = round(mb_strlen($langs[$lang] / 50)) +1 ;
 							echo ('<textarea name="trans['.$index.'][mv]" cols="80" class="small" rows="' . $rows . '">' . $langs[$lang] . '</textarea>');
 						}
 				?>

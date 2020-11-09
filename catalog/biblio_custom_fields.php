@@ -37,8 +37,8 @@
 
   # Hack to get around the way printUsmarcInputText works
   class CustomDescr {
-    function CustomDescr($descr) {
-      $this->descr = $descr;
+    function __construct($descr) {
+    $this->descr = $descr;
     }
     function getDescription() {
       return $this->descr;

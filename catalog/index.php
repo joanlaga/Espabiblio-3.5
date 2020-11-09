@@ -3,7 +3,7 @@
  * See the file COPYRIGHT.html for more details.
  */
  
-  require_once("../shared/common.php");
+  
  // ##session_cache_limiter(null);
 
   $tab = "cataloging";
@@ -13,12 +13,13 @@
   $focus_form_field = "searchText";
 
 //$bootstrap = true;
-
+  require_once("../shared/common.php");
   require_once("../shared/logincheck.php");
   require_once("../shared/header.php");
   require_once("../classes/Localize.php");
-  $loc = new Localize(OBIB_LOCALE,$tab);
 
+  $loc = new Localize(OBIB_LOCALE,$tab);
+  
 ?>
 
 <h1><img src="../images/catalog.png" border="0" width="30" height="30" align="top"> <?php echo $loc->getText("indexHdr");?></h1>

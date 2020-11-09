@@ -63,13 +63,11 @@ class BiblioField {
           if (!$path) {
             $this->_fieldDataError = $loc->getText("biblioFieldErrorCoverLookupFailed");
             $valid = false;
-          }
-          else {
+          }else {
             $filename = $cq->save($path, 0);
             $this->setFieldData($filename);
           }
-        }
-        else {
+        }else {
           $index = $this->getTag().$this->getSubfieldCd();
           if (!empty($fieldData["tmp_name"][$index])) {
             if ($info = getimagesize($fieldData["tmp_name"][$index])) {
@@ -114,8 +112,7 @@ class BiblioField {
                             $dir_error = TRUE;
                           }
                         }
-                      }
-                      else {
+                      }else {
                         $dir_error = TRUE;
                       }
                     }
@@ -133,20 +130,17 @@ class BiblioField {
                 copy($fieldData["tmp_name"][$index], $filepath);
                 make_thumbnail($filepath, array('height' => 160));
                 $this->setFieldData($filename);
-              }
-              else {
+              }else {
                 $valid = false;
                 $this->_fieldDataError = $loc->getText("biblioFieldErrorPictureType");
               }
-            }
-            else {
+            }else {
               $valid = false;
               $this->_fieldDataError = $loc->getText("biblioFieldErrorPictureLoadFailed");
             }
           }
         }
-      }
-      else {
+      }else {
       }
     }
     /* Check existing ISBN items */

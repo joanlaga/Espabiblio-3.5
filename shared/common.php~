@@ -15,6 +15,9 @@
       unset(${$k});
     }
   }
+echo '<pre>' ; //Test  
+    var_dump($_SERVER);
+  echo '</pre>' ; //Test
   
   /****************************************************************************
    * Cover up for the magic_quotes disaster.
@@ -34,9 +37,9 @@
     }
 
     // Remove slashes from all incoming GET/POST/COOKIE data.
-    $_GET     = array_map("magicSlashes", $_GET);
-    $_POST    = array_map("magicSlashes", $_POST);
-    $_COOKIE  = array_map("magicSlashes", $_COOKIE);
+    $_GET    = array_map("magicSlashes", $_GET);
+    $_POST   = array_map("magicSlashes", $_POST);
+    $_COOKIE = array_map("magicSlashes", $_COOKIE);
     $_REQUEST = array_map("magicSlashes", $_REQUEST);
   }
   
@@ -49,7 +52,8 @@
     error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT); // jalg /correcion de error 02082013
   } // jalg /correcion de error 02082013
   
-  error_reporting(E_ALL );//test jalg
+  error_reporting(E_ALL );
+  
   
   /* Work around PHP's braindead include_path stuff. */
   function REL($sf, $if) {
@@ -125,13 +129,13 @@ function H($s)
 
 //mod ene-2016
 $pages = array(
-    'opac'          => '../opac/index.php',
-    'home'          => '../home/index.php',
-    'circulation'   => '../circ/index.php',
-    'cataloging'    => '../catalog/index.php',
-    'admin'         => '../admin/index.php',
-    'reports'       => '../reports/index.php',
-    'inventory'     => '../inventory/index.php'
+    'opac' => '../opac/index.php',
+    'home' => '../home/index.php',
+    'circulation' => '../circ/index.php',
+    'cataloging' => '../catalog/index.php',
+    'admin' => '../admin/index.php',
+    'reports' => '../reports/index.php',
+    'inventory' => '../inventory/index.php'
     );
   
   require_once('../database_constants.php');

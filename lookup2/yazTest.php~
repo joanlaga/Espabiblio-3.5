@@ -1,8 +1,12 @@
 <?php
 
+echo "<pre>";
+print_r($_REQUEST);
+echo "<pre>";
+
 $host			= @$_REQUEST['host'];
 $query		= @$_REQUEST['query'];
-$num_hosts	= @count($host);
+$num_hosts	= count($host);
 
 	if (empty($query) || count($host) == 0) {
    	 echo ' 	<form method="get">

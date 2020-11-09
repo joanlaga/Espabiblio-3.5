@@ -12,6 +12,7 @@ define("OBIB_FILE_CNTRLA", "5");
 define("OBIB_FILE_CNTRLS", "6");
 define("OBIB_FILE_CNTRLB", "7");
 define("OBIB_FILE_CNTRLK", "8");
+define("OBIB_FILE_CNTRLF", "9");//9-11-2020
 
    // modificado para mostrar imagen portada
 /*********************************************************************************
@@ -64,13 +65,9 @@ function printUsmarcInputText($tag,$subfieldCd,$required,&$postVars,&$pageErrors
   } else {
       $error = $pageErrors[$formIndex];
   }
-
+  echo "<tr><td class=\"primary form-required\" valign=\"top\">\n";
   if ($required) {
-    echo "<tr><td class=\"primary form-required\" valign=\"top\">\n";
     echo "<sup>*</sup> ";
-  }
-  else {
-    echo "<tr><td class=\"primary form-optional\" valign=\"top\">\n";
   }
   if (($showTagDesc) 
     && (isset($marcTags[$tag]))
@@ -135,7 +132,8 @@ function printUsmarcInputText($tag,$subfieldCd,$required,&$postVars,&$pageErrors
     echo " name=\"values[".H($formIndex)."]\" size=\"".H($size)."\" maxlength=\"".H($maxLen)."\" ";
     echo " onChange=\"File_CoverReload()\" ";
     echo "value=\"".H($value)."\" >";
-    echo "<sup>(1)</sup>". $values[H($formIndex)];  
+    echo " <a></a> ";
+    echo "<sup>(1)</sup>". @$values[H($formIndex)];  # FIXME Revisar
     break;  
 
   case OBIB_FILE_CNTRL:

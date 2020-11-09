@@ -12,7 +12,7 @@
  * @access public
  *********************************************************************************
  */
-# fix falta meter el gettex
+# FIXME falta meter el gettex
 
 function printUsmarcText($tab,$tag,$subfieldCd,&$marcTags,&$marcSubflds,$showTagDesc, $opac = TRUE){
 //echo $tab;  

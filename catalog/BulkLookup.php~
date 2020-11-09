@@ -11,6 +11,11 @@ require_once("../classes/Localize.php");
 $loc = new Localize(OBIB_LOCALE,$tab);
 $navbar = new Localize(OBIB_LOCALE, 'navbars');
 
+
+echo '<pre>' ; //Test  
+    var_dump($tab);
+  echo '</pre>' ; //Test    
+
 // Bulk Lookup Test
 if (isset($_POST['submit'])) {
   

@@ -27,6 +27,10 @@
       'reports'		=> '../reports/index.php',
     );
 
+echo '<pre>' ; //Test  
+    var_dump($tab);
+  echo '</pre>' ; //Test    
+    
   $returnPage = $pages["$tab"];
   $_SESSION["returnPage"] = $returnPage;
 

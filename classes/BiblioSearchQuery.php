@@ -82,12 +82,12 @@ class BiblioSearchQuery extends Query {
     $short = '';
 
 	  if($words == ''){ //mod 2017 2 mar añadido para evitar error en menu de Eliminar Bibliografías por lotes
-		  	$words =array('keyword_type_1' =>  'title');
-	}//mod 2017 2 mar
-	  
-    $words = array_unique(unserialize(strtolower(serialize($words))));
-
-    if ((sizeof($words) == 0) || ($words[0] == "" && !is_array($words))) { //11-2015 para que no marque error cuando no se manda una cadena de busqueda
+		  	$words = array('keyword_type_1' =>  'title');
+	}else{
+            $words = array_unique(unserialize(strtolower(serialize($words))));
+    }
+    
+    if ((sizeof($words) == 0) || (@$words[0] == "" && !is_array($words))) { //11-2015 para que no marque error cuando no se manda una cadena de busqueda
       if ($opacFlg) $criteria = "where opac_flg = 'Y' ";
         $join .= " LEFT join biblio_copy ON biblio_field.bibid=biblio.bibid ";
 	$criteria .= $this->_getCriteria(array("biblio_field.field_data"), $words);
@@ -512,7 +512,7 @@ class BiblioSearchQuery extends Query {
     $prefix = "WHERE ";
     $criteria = "";
     for ($i = 0; $i < count($words); $i++) {
-      $criteria .= $prefix . $this->_getLike($cols, $words[$i]);
+      $criteria .= $prefix . $this->_getLike($cols, @$words[$i]);
       $prefix = " AND ";
     }
     return $criteria;

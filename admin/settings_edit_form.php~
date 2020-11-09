@@ -79,7 +79,7 @@
       while(false !== ($file = readdir($handle))) {
         $f = explode('.', $file);
         // Implemented font files
-        if (@$f[1] == 'php') {
+        if ($f[1] == 'php') {
           $opts[] = $f[0];
         }
       }

@@ -26,14 +26,14 @@ class Error {
 */
 
 /* For when an error applies to a particular form or DB field */
-class FieldError extends Error {
+ class FieldError extends Error {
   /* public */
   var $field;
   function __construct($field, $msg) {
     parent::Error($msg);
     $this->field = $field;
   }
-  function listExtract($errors) {
+  static function listExtract($errors) {
     $msgs = array();
     $l = array();
     foreach ($errors as $e) {
@@ -49,7 +49,7 @@ class FieldError extends Error {
     }
     return array($msg, $l);
   }
-  function backToForm($url, $errors) {
+  static function backToForm($url, $errors) {
     list($msg, $fielderrs) = FieldError::listExtract($errors);
     $_SESSION["postVars"] = mkPostVars();
     $_SESSION["pageErrors"] = $fielderrs;
