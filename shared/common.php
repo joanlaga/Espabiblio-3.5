@@ -125,13 +125,13 @@ function H($s)
 
 //mod ene-2016
 $pages = array(
-    'opac'          => '../opac/index.php',
-    'home'          => '../home/index.php',
-    'circulation'   => '../circ/index.php',
-    'cataloging'    => '../catalog/index.php',
-    'admin'         => '../admin/index.php',
-    'reports'       => '../reports/index.php',
-    'inventory'     => '../inventory/index.php'
+    'opac'			=> '../opac/index.php',
+    'home'			=> '../home/index.php',
+    'circulation'	=> '../circ/index.php',
+    'cataloging'	=> '../catalog/index.php',
+    'admin'			=> '../admin/index.php',
+    'reports'		=> '../reports/index.php',
+    'inventory'		=> '../inventory/index.php'
     );
   
   require_once('../database_constants.php');

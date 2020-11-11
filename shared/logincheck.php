@@ -17,14 +17,17 @@
   #*  seems to be using mirrored servers that do not share session info.
   #****************************************************************************
   if (!OBIB_DEMO_FLG) {
+  //var_dump($pages);
     $pages = array(
-      'opac'			=> '../opac/index.php',
-      'circ2'			=> '../circ2/index.php',
-      'home'			=> '../home/index.php',
+      'opac'		=> '../opac/index.php',
+      'circ2'		=> '../circ2/index.php',
+      'home'		=> '../home/index.php',
       'circulation'	=> '../circ/index.php',
       'cataloging'	=> '../catalog/index.php',
-      'admin'			=> '../admin/index.php',
+      'admin'		=> '../admin/index.php',
       'reports'		=> '../reports/index.php',
+      'inventory'   => '../inventory/index.php'
+,
     );
 
   $returnPage = $pages["$tab"];

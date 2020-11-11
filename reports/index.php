@@ -13,7 +13,7 @@
   require_once("../classes/Report.php");
   require_once("../classes/Localize.php");
   $loc = new Localize(OBIB_LOCALE,$tab);
-  $navLoc = new Localize(OBIB_LOCALE, 'navbars');
+  $navLoc = new Localize(OBIB_LOCALE, 'navbars'); //FIXME
   define("REPORT_DEFS_DIR","../reports/defs");
 
   #****************************************************************************

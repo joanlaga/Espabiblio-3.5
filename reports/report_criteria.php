@@ -57,7 +57,9 @@
     )),
   );
   $params = array_merge($rpt->paramDefs(), $format);
-  Params::printForm($params);
+  $ParamsK = new Params();
+  $ParamsK->printForm($params);
+  //Params::printForm($params);//10-11-2020 adecuaicon para php.7
 ?>
 
 <input type="submit" value="<?php echo $loc->getText('Submit'); ?>" class="button" />

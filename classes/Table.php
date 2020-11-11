@@ -100,9 +100,61 @@ class Table {
       }
       echo '>';
       if (isset($col['func']) and in_array($col['func'], get_class_methods('TableFuncs'))) {
-        echo TableFuncs::$col['func']($col, $row, $this->_params);
+
+        //echo TableFuncs::$col['func'] ($col, $row, $this->_params);
+        $tableFuncs = new TableFuncs();
+
+        switch ($col['func']) {
+          case 'raw':
+            echo $tableFuncs->func($col, $row, $this->_params);
+            break;
+          case '_link_common':
+            echo $tableFuncs->_link_common($col, $row, $this->_params);
+            break;
+          case 'item_cart_add':
+            echo $tableFuncs->item_cart_add($col, $row, $this->_params);
+            break;
+          case 'item_cart_del':
+            echo $tableFuncs->item_cart_del($col, $row, $this->_params);
+            break;
+          case 'biblio_link':
+            echo $tableFuncs->biblio_link($col, $row, $this->_params);
+            break;
+          case 'subject_link':
+            echo $tableFuncs->subject_link($col, $row, $this->_params);
+            break;
+          case 'series_link':
+            echo $tableFuncs->series_link($col, $row, $this->_params);
+            break;
+          case 'booking_link':
+            echo $tableFuncs->booking_link($col, $row, $this->_params);
+            break;
+          case 'member_link':
+            echo $tableFuncs->member_link($col, $row, $this->_params);
+            break;
+          case 'site_link':
+            echo $tableFuncs->site_link($col, $row, $this->_params);
+            break;
+          case 'calendar_link':
+            echo $tableFuncs->calendar_link($col, $row, $this->_params);
+            break;
+          case 'checkbox':
+            echo $tableFuncs->checkbox($col, $row, $this->_params);
+            break;
+          case 'select':
+            echo $tableFuncs->select($col, $row, $this->_params);
+            break;
+          case 'member_list':
+            echo $tableFuncs->member_list($col, $row, $this->_params);
+            break;
+ 
+          default:
+            break;
+      }
+
+      
       } else {
-        echo H($row[$col['name']]);
+          echo H($row[$col['name']]);
       }
       echo "</td>\n";
     }
@@ -115,10 +167,10 @@ class Table {
 }
 
 class TableFuncs {
-  function raw($col, $row, $params) {
+  static function raw($col, $row, $params) {
     return $row[$col['name']];
   }
-  function _link_common($col, $row, $params, $url, $rpt_colname=NULL) {
+  static function _link_common($col, $row, $params, $url, $rpt_colname=NULL) {
     if ($rpt_colname and isset($params['rpt']) and isset($params['rpt_colnames'])
         and in_array($rpt_colname, $params['rpt_colnames'])) {
       assert('$row[".seqno"] !== NULL');
@@ -132,17 +184,17 @@ class TableFuncs {
     $s .= 'href="'.$url.'">'.H($row[$col['name']]).'</a>';
     return $s;
   }
-  function item_cart_add($col, $row, $params) {
+  static function item_cart_add($col, $row, $params) {
     global $tab;	# FIXME - get rid of $tab
     $url = '../shared/cart_add.php?name=bibid&amp;id[]='.HURL($row['bibid']).'&amp;tab='.HURL($tab);
     return TableFuncs::_link_common($col, $row, $params, $url);
   }
-  function item_cart_del($col, $row, $params) {
+  static function item_cart_del($col, $row, $params) {
     global $tab;	# FIXME - get rid of $tab
     $url = '../shared/cart_del.php?name=bibid&amp;id[]='.HURL($row['bibid']).'&amp;tab='.HURL($tab);
     return TableFuncs::_link_common($col, $row, $params, $url);
   }
-  function biblio_link($col, $row, $params) {
+  static function biblio_link($col, $row, $params) {
     global $tab;	# FIXME - get rid of $tab
     $url = '../shared/biblio_view.php?bibid='.HURL($row['bibid']);
     if ($tab != 'opac') {
@@ -152,7 +204,7 @@ class TableFuncs {
     }
     return TableFuncs::_link_common($col, $row, $params, $url, 'bibid');
   }
-  function subject_link($col, $row, $params) {
+  static function subject_link($col, $row, $params) {
     global $tab;	# FIXME - get rid of $tab
     $url = '../shared/biblio_search.php?searchType=subject&amp;exact=1&amp;searchText='.HURL($row['subject']);
     if ($tab != 'opac') {
@@ -162,7 +214,7 @@ class TableFuncs {
     }
     return TableFuncs::_link_common($col, $row, $params, $url);
   }
-  function series_link($col, $row, $params) {
+  static function series_link($col, $row, $params) {
     global $tab;	# FIXME - get rid of $tab
     $url = '../shared/biblio_search.php?searchType=series&amp;exact=1&amp;searchText='.HURL($row['series']);
     if ($tab != 'opac') {
@@ -172,23 +224,23 @@ class TableFuncs {
     }
     return TableFuncs::_link_common($col, $row, $params, $url);
   }
-  function booking_link($col, $row, $params) {
+  static function booking_link($col, $row, $params) {
     $url = '../circ/booking_view.php?bookingid='.HURL($row['bookingid']);
     return TableFuncs::_link_common($col, $row, $params, $url, 'bookingid');
   }
-  function member_link($col, $row, $params) {
+  static function member_link($col, $row, $params) {
     $url = '../circ/mbr_view.php?mbrid='.HURL($row['mbrid']);
     return TableFuncs::_link_common($col, $row, $params, $url, 'mbrid');
   }
-  function site_link($col, $row, $params) {
+  static function site_link($col, $row, $params) {
     $url = '../admin/sites_edit_form.php?siteid='.HURL($row['siteid']);
     return TableFuncs::_link_common($col, $row, $params, $url, 'siteid');
   }
-  function calendar_link($col, $row, $params) {
+  static function calendar_link($col, $row, $params) {
     $url = '../admin/calendar_edit_form.php?calendar='.HURL($row['calendar']);
     return TableFuncs::_link_common($col, $row, $params, $url, 'calendar');
   }
-  function checkbox($col, $row, $params) {
+  static function checkbox($col, $row, $params) {
     assert('$col["checkbox_name"] != NULL');
     assert('$col["checkbox_value"] != NULL ');
     $s = '<input type="checkbox" ';
@@ -204,7 +256,7 @@ class TableFuncs {
     $s .= '/>';
     return $s;
   }
-  function select($col, $row, $params) {
+  static function select($col, $row, $params) {
     assert('$col["select_name"] != NULL');
     assert('$col["select_index"] != NULL');
     assert('$col["select_key"] != NULL');
@@ -221,7 +273,7 @@ class TableFuncs {
     }
     return inputfield('select', $name, $selected, NULL, $data);
   }
-  function member_list($col, $row, $params) {
+  static function member_list($col, $row, $params) {
     $s = '';
     foreach ($row[$col['name']] as $m) {
       $s .= '<a href="../circ/mbr_view.php?mbrid='.HURL($m['mbrid']).'">'

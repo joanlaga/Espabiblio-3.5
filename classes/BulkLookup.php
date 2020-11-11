@@ -4,7 +4,8 @@ require_once("../lookup2/LookupHostsQuery.php");
 
 class BulkLookup {
   var $_results;
-  function BulkLookup() {    
+  function __construct () {
+  //function BulkLookup() {    
   }
   
   function showResults() {
@@ -278,15 +279,15 @@ class BulkLookupQuery extends Query {
       case 'manual_list':
         $this->_query("SELECT COUNT(*) AS c FROM lookup_manual WHERE hits!=0", false);
         $res = $this->fetch();
-        return $res[c];
+        return $res['c'];
       case 'manual_list_zero':
         $this->_query("SELECT COUNT(*) AS c FROM lookup_manual WHERE hits=0", false);
         $res = $this->fetch();
-        return $res[c];
+        return $res['c'];
       case 'cover_list':
         $this->_query("SELECT COUNT(*) AS c FROM biblio WHERE has_cover='N'", false);
         $res = $this->fetch();
-        return $res[c];
+        return $res['c'];
       default:
         $cond = '';
       
@@ -294,7 +295,7 @@ class BulkLookupQuery extends Query {
     $this->_query("SELECT COUNT(*) AS c FROM lookup_queue $cond", false);
     
     $res = $this->fetch();
-    return $res[c];
+    return $res['c'];
   }
   
   function setLookupStatus($status, $isbn, $amount = 1) {
@@ -409,10 +410,10 @@ class BulkLookupQuery extends Query {
       $copyQ->close();
       /*
       if ($copyQ->getDbErrno() == "") {
-        $pageErrors["barcodeNmbr"] = $copyQ->getError();
-        $_SESSION["postVars"] = $_POST;
-        $_SESSION["pageErrors"] = $pageErrors;
-        header("Location: ../catalog/biblio_copy_new_form.php?bibid=".U($bibid));
+        $pageErrors['barcodeNmbr'] = $copyQ->getError();
+        $_SESSION['postVars'] = $_POST;
+        $_SESSION['pageErrors'] = $pageErrors;
+        header('Location: ../catalog/biblio_copy_new_form.php?bibid='.U($bibid));
         exit();
       } else {
         displayErrorPage($copyQ);
@@ -466,23 +467,18 @@ class BulkLookupQuery extends Query {
       
       /* Unmanaged code
       case 'dew':
-        
         var fictionDew = lkup.opts['fictionDew'].split(' ');
-			if (lkup.opts['autoDewey']
-					&&
-					((code == "") || (code == "[Fic]"))
-					&&
-					(fictionDew.indexOf(code) >= 0)
-				 ) {
+        # FIXME code == "[Fic]" nunca se dara.
+			if (lkup.opts['autoDewey'] && ((code == "") || (code == "[Fic]")) && (fictionDew.indexOf(code) >= 0)) {
 				//echo "using default dewey code" . '</br />';
 				dew = lkup.opts['defaultDewey'];
 			}
 
 			var parts = code.split('.');
-			var base1 = parts[0];
+			var base1 = parts['0'];
 			var callNmbr = base1;
 			if (parts[1]) {
-				var base2 = parts[1].split('/');
+				var base2 = parts['1'].split('/');
 				callNmbr += '.'+base2;
 			}
 			callNmbr = callNmbr.replace('/', '');
@@ -510,12 +506,12 @@ class BulkLookupQuery extends Query {
     require_once("BiblioField.php");
     
     $biblio = new Biblio();
-    $biblio->setMaterialCd($post["materialCd"]);
-    $biblio->setCollectionCd($post["collectionCd"]);
-    $biblio->setCallNmbr1($post["callNmbr1"]);
-    $biblio->setCallNmbr2($post["callNmbr2"]);
-    $biblio->setCallNmbr3($post["callNmbr3"]);
-    $biblio->setLastChangeUserid($_SESSION["userid"]);
+    $biblio->setMaterialCd($post['materialCd']);
+    $biblio->setCollectionCd($post['collectionCd']);
+    $biblio->setCallNmbr1($post['callNmbr1']);
+    $biblio->setCallNmbr2($post['callNmbr2']);
+    $biblio->setCallNmbr3($post['callNmbr3']);
+    $biblio->setLastChangeUserid($_SESSION['userid']);
     $biblio->setOpacFlg(true);
     unset($post['callNmbr1'], $post['callNmbr2'], $post['callNmbr3'], $post['collectionCd'], $post['materialCd']);
     $post['020a'] = BulkLookup::verifyISBN($post['020a']);

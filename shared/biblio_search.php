@@ -2,56 +2,56 @@
 /* This file is part of a copyrighted work; it is distributed with NO WARRANTY.
  * See the file COPYRIGHT.html for more details.
  */
-require_once("../shared/common.php");
+require_once('../shared/common.php');
 #session_cache_limiter(null);
 
   #****************************************************************************
   #*  Checking for post vars.  Go back to form if none found.
   #****************************************************************************
   if (count($_POST) == 0 && empty($_GET['tag'])) {
-    header("Location: ../catalog/index.php");
+    header('Location: ../catalog/index.php');
     exit();
   }
 
   #****************************************************************************
   #*  Checking for tab name to show OPAC look and feel if searching from OPAC
   #****************************************************************************
-  $tab = "cataloging";
-  $helpPage = "biblioSearch";
-  $lookup = "N";
+  $tab = 'cataloging';
+  $helpPage = 'biblioSearch';
+  $lookup = 'N';
 //jalg modificado para busquedas aisladas de autores entre administrador y opac 10/jul/2013
-  if (isset($_POST["tab"]) || isset($_GET['tab'])) {
-    if (isset($_POST["tab"])) {
-      $tab = $_POST["tab"];
+  if (isset($_POST['tab']) || isset($_GET['tab'])) {
+    if (isset($_POST['tab'])) {
+      $tab = $_POST['tab'];
     }
-    if (isset($_GET["tab"])) {
-      $tab = $_GET["tab"];
+    if (isset($_GET['tab'])) {
+      $tab = $_GET['tab'];
     }
   }
 //jalg modificado para busquedas aisladas de autores entre administrador y opac 10/jul/2013
-  if (isset($_POST["lookup"])) {
-    $lookup = $_POST["lookup"];
+  if (isset($_POST['lookup'])) {
+    $lookup = $_POST['lookup'];
     if ($lookup == 'Y') {
-      $helpPage = "opacLookup";
+      $helpPage = 'opacLookup';
     }
   }
 
-  $nav = "search";
+  $nav = 'search';
 
-  if ($tab != "opac") {
-    require_once("../shared/logincheck.php");
+  if ($tab != 'opac') {
+    require_once('../shared/logincheck.php');
   }
-  require_once("../classes/BiblioSearch.php");
-  require_once("../classes/BiblioSearchQuery.php");
-  require_once("../classes/BiblioFieldQuery.php");
-  require_once("../functions/searchFuncs.php");
-  require_once("../functions/cleanString.php"); //Añadida por Bruj0 para limpiar cadenas con caracteres extraños, al parecer no se usa 27jun2014
-  require_once("../classes/DmQuery.php");
+  require_once('../classes/BiblioSearch.php');
+  require_once('../classes/BiblioSearchQuery.php');
+  require_once('../classes/BiblioFieldQuery.php');
+  require_once('../functions/searchFuncs.php');
+  require_once('../functions/cleanString.php'); //Añadida por Bruj0 para limpiar cadenas con caracteres extraños, al parecer no se usa 27jun2014
+  require_once('../classes/DmQuery.php');
 
 /*
-echo "<pre>";
+echo '<pre>';
 print_r($_REQUEST);
-echo "</pre>";
+echo '</pre>';
 */
   #****************************************************************************
   #*  Function declaration only used on this page.
@@ -60,9 +60,9 @@ echo "</pre>";
     if ($pageCount <= 1) {
       return false;
     }
-      echo $loc->getText("biblioSearchResultPages").": ";
+      echo $loc->getText('biblioSearchResultPages').': ';
      if ($currPage > 6) {
-       echo "<a href=\"javascript:changePage(".H(addslashes(1)).",'".H(addslashes($sort))."')\">&laquo;".$loc->getText("First")."</a> ";
+       echo "<a href=\"javascript:changePage(".H(addslashes(1)).",'".H(addslashes($sort))."')\">&laquo;".$loc->getText('First')."</a> ";
      }
       if ($currPage > 1) {
         echo "<a href=\"javascript:changePage(".H(addslashes($currPage-1)).",'".H(addslashes($sort))."')\">&laquo;".$loc->getText("biblioSearchPrev")."</a> ";
@@ -93,56 +93,56 @@ echo "</pre>";
   #****************************************************************************
   $dmQ = new DmQuery();
   $dmQ->connect();
-  $collectionDm = $dmQ->getAssoc("collection_dm");
-  $materialTypeDm = $dmQ->getAssoc("material_type_dm");
-  $materialImageFiles = $dmQ->getAssoc("material_type_dm", "image_file");
-  $biblioStatusDm = $dmQ->getAssoc("biblio_status_dm");
+  $collectionDm = $dmQ->getAssoc('collection_dm');
+  $materialTypeDm = $dmQ->getAssoc('material_type_dm');
+  $materialImageFiles = $dmQ->getAssoc('material_type_dm', 'image_file');
+  $biblioStatusDm = $dmQ->getAssoc('biblio_status_dm');
   $dmQ->close();
 
   #****************************************************************************
   #*  Retrieving post vars and scrubbing the data
   #****************************************************************************
-  if (isset($_POST["page"])) {
-    $currentPageNmbr = $_POST["page"];
+  if (isset($_POST['page'])) {
+    $currentPageNmbr = $_POST['page'];
   } else {
     $currentPageNmbr = 1;
   }
   
   if (!empty($_POST['searchType'])) {
-    $searchType = $_POST["searchType"];
-    $sortBy = $_POST["sortBy"];
-    if ($sortBy == "default") {
-      if ($searchType == "author") {
-        $sortBy = "author";
+    $searchType = $_POST['searchType'];
+    $sortBy = $_POST['sortBy'];
+    if ($sortBy == 'default') {
+      if ($searchType == 'author') {
+        $sortBy = 'author';
       } else {
-        $sortBy = "title";
+        $sortBy = 'title';
       }
     }
-    $searchText = trim($_POST["searchText"]);
+    $searchText = trim($_POST['searchText']);
     # remove redundant whitespace
     $searchText = preg_replace("/[[:space:]]+/i", " ", $searchText);
-    if ($searchType == "barcodeNmbr") {
+    if ($searchType == 'barcodeNmbr') {
       $sType = OBIB_SEARCH_BARCODE;
       $words[] = $searchText;
     } else {
       $words = explodeQuoted($searchText);
-      if ($searchType == "author") {
+      if ($searchType == 'author') {
         $sType = OBIB_SEARCH_AUTHOR;
-      } elseif ($searchType == "subject") {
+      } elseif ($searchType == 'subject') {
         $sType = OBIB_SEARCH_SUBJECT;
-      } elseif ($searchType == "isbn") {
+      } elseif ($searchType == 'isbn') {
         $sType = OBIB_SEARCH_ISBN;
 // añadido de filtros busquedas 3-2015 JALG
-      } elseif ($searchType == "language") {
+      } elseif ($searchType == 'language') {
         $sType = OBIB_SEARCH_LANGUAGE;
-      } elseif ($searchType == "material") {        
+      } elseif ($searchType == 'material') {        
         $sType = OBIB_SEARCH_MATERIAL;
 // añadido de filtros busquedas 3-2015 JALG
 // añadido de filtros busquedas 11-2015 JALG
-    } elseif ($searchType == "keyword") {//para buscar por palabra clave
+    } elseif ($searchType == 'keyword') {//para buscar por palabra clave
       $sType = OBIB_SEARCH_KEYWORD;
 // añadido de filtros busquedas 11-2015 JALG
-      } elseif ($searchType == "advanced") {
+      } elseif ($searchType == 'advanced') {
         $sType = OBIB_ADVANCED_SEARCH;
         $words = $_POST;
       } else {
@@ -169,7 +169,7 @@ echo "</pre>";
     displayErrorPage($biblioQ);
   }
   # checking to see if we are in the opac search or logged in
-  if ($tab == "opac") {
+  if ($tab == 'opac') {
     $opacFlg = true;
   } else {
     $opacFlg = false;
@@ -191,19 +191,19 @@ echo "</pre>";
   #**************************************************************************
   #*  Show search results
   #**************************************************************************
-  if ($tab == "opac") {
-    require_once("../opac/header_opac.php");
+  if ($tab == 'opac') {
+    require_once('../opac/header_opac.php');
   } else {
-    require_once("../shared/header.php");
+    require_once('../shared/header.php');
   }
-  require_once("../classes/Localize.php");
-  $loc = new Localize(OBIB_LOCALE,"shared");
+  require_once('../classes/Localize.php');
+  $loc = new Localize(OBIB_LOCALE,'shared');
 
   # Display no results message if no results returned from search.
   if ($biblioQ->getRowCount() == 0) {
     $biblioQ->close();
-    echo $loc->getText("biblioSearchNoResults");
-    require_once("../shared/footer.php");
+    echo $loc->getText('biblioSearchNoResults');
+    require_once('../shared/footer.php');
     exit();
   }
 ?>
@@ -227,19 +227,19 @@ function changePage(page,sort)
     ************************************************************************** -->
       
 <form name="changePageForm" method="POST" action="../shared/biblio_search.php<?php echo isset($_REQUEST['tag']) ? '?tag=' . $_REQUEST['tag'] . '&words=' . $_REQUEST['words'] : ''?>">
-  <input type="hidden" name="searchType"		value="<?php echo H($_REQUEST["searchType"]);?>">
-  <input type="hidden" name="searchText"		value="<?php echo H($_REQUEST["searchText"]);?>">
-  <input type="hidden" name="keyword_type_1"	value="<?php echo H($_REQUEST["keyword_type_1"]);?>">
-  <input type="hidden" name="keyword_text_1"	value="<?php echo H($_REQUEST["keyword_text_1"]);?>">  
-  <input type="hidden" name="expression_2"	value="<?php echo H($_REQUEST["expression_2"]);?>">
-  <input type="hidden" name="keyword_type_2"	value="<?php echo H($_REQUEST["keyword_type_2"]);?>">  
-  <input type="hidden" name="keyword_text_2"	value="<?php echo H($_REQUEST["keyword_text_2"]);?>">
-  <input type="hidden" name="publishedYear"	value="<?php echo H($_REQUEST["publishedYear"]);?>">
-  <input type="hidden" name="language"			value="<?php echo H($_REQUEST["language"]);?>">
-  <input type="hidden" name="materialCd"		value="<?php echo H($_REQUEST["materialCd"]);?>">
-  <input type="hidden" name="collectionCd"	value="<?php echo H($_REQUEST["collectionCd"]);?>">  
-<!--   <input type="hidden" name="lookup"		value="<?php echo H($_REQUEST["lookup"]);?>">  -->
-  <input type="hidden" name="sortBy"			value="<?php echo H($_REQUEST["sortBy"]);?>">
+  <input type="hidden" name="searchType"		value="<?php echo H($_REQUEST['searchType']);?>">
+  <input type="hidden" name="searchText"		value="<?php echo H($_REQUEST['searchText']);?>">
+  <input type="hidden" name="keyword_type_1"	value="<?php echo H($_REQUEST['keyword_type_1']);?>">
+  <input type="hidden" name="keyword_text_1"	value="<?php echo H($_REQUEST['keyword_text_1']);?>">  
+  <input type="hidden" name="expression_2"	value="<?php echo H($_REQUEST['expression_2']);?>">
+  <input type="hidden" name="keyword_type_2"	value="<?php echo H($_REQUEST['keyword_type_2']);?>">  
+  <input type="hidden" name="keyword_text_2"	value="<?php echo H($_REQUEST['keyword_text_2']);?>">
+  <input type="hidden" name="publishedYear"	value="<?php echo H($_REQUEST['publishedYear']);?>">
+  <input type="hidden" name="language"			value="<?php echo H($_REQUEST['language']);?>">
+  <input type="hidden" name="materialCd"		value="<?php echo H($_REQUEST['materialCd']);?>">
+  <input type="hidden" name="collectionCd"	value="<?php echo H($_REQUEST['collectionCd']);?>">  
+<!--   <input type="hidden" name="lookup"		value="<?php echo H($_REQUEST['lookup']);?>">  -->
+  <input type="hidden" name="sortBy"			value="<?php echo H($_REQUEST['sortBy']);?>">
   <input type="hidden" name="lookup"			value="<?php echo H($lookup);?>">
   <input type="hidden" name="page"				value="1">
   <input type="hidden" name="tab"				value="<?php echo H($tab);?>">
@@ -306,8 +306,8 @@ function changePage(page,sort)
 
 //  $loc = new Localize(OBIB_LOCALE,"shared");
 
-  if (isset($_GET["msg"])) {
-    $msg = "<font class=\"error\">".H($_GET["msg"])."</font><br><br>";
+  if (isset($_GET['msg'])) {
+    $msg = "<font class=\"error\">".H($_GET['msg'])."</font><br><br>";
   } else {
     $msg = "";
   }
@@ -373,19 +373,19 @@ function changePage(page,sort)
   <td nowrap="true" class="primary" valign="top" align="center" rowspan="2">
 <?php if ( isset($LbiblioFlds['902c']) ) {  //determina si tiene foto el autor?>
 	<a href="
-<?php $filisb = ".." . AUTOR_PATH . "/" . $LbiblioFlds["902c"]->getFieldData() ;
+<?php $filisb = ".." . AUTOR_PATH . "/" . $LbiblioFlds['902c']->getFieldData() ;
               if (file_exists($filisb)){
 					echo $filisb; // local
 		     } else {
-				  	 echo $LbiblioFlds["902c"]->getFieldData(); // nube
+				  	 echo $LbiblioFlds['902c']->getFieldData(); // nube
  			} ?>"
  			 target="_blank" >
    		< img src="<?php 
- 						$filisb = ".." . AUTOR_PATH . "/" . $LbiblioFlds["902c"]->getFieldData() ;
+ 						$filisb = ".." . AUTOR_PATH . "/" . $LbiblioFlds['902c']->getFieldData() ;
               if (file_exists($filisb)){
 					echo $filisb; // local
 		     } else {
-				  	 echo $LbiblioFlds["902c"]->getFieldData(); // nube
+				  	 echo $LbiblioFlds['902c']->getFieldData(); // nube
  			} 
        ?>"
                width="100" 
@@ -414,8 +414,8 @@ function changePage(page,sort)
             ?> 
       " target="_blank">
    	<img src="<?php 
-   		if (isset($LbiblioFlds["902c"])) {
-                     echo "../" . AUTOR_PATH . "/" . $LbiblioFlds["902c"]->getFieldData();
+   		if (isset($LbiblioFlds['902c'])) {
+                     echo "../" . AUTOR_PATH . "/" . $LbiblioFlds['902c']->getFieldData();
 	          }  else { 
      	       if (is_file( $Ruta_Autor .".jpg")) {
           	           echo $Ruta_Autor .".jpg";
@@ -491,16 +491,16 @@ function changePage(page,sort)
         <tr>
          <?php 
 
-if (isset($LbiblioFlds["903a"])) {  //determina si es material digital?>
+if (isset($LbiblioFlds['903a'])) {  //determina si es material digital?>
   <td class="noborder" style="color: green" width="1%" valign="top"><b><?php echo $loc->getText("biblioSearchDigitales"); ?>:</b></td>
   <td class="noborder"  colspan="3">
-         <a href="<?php $filisb = '../' . DIGI_PATH . '/'. addslashes ($LbiblioFlds["903a"]->getFieldData());
+         <a href="<?php $filisb = '../' . DIGI_PATH . '/'. addslashes ($LbiblioFlds['903a']->getFieldData());
               if (file_exists($filisb)){
 					echo $filisb; // local
 		     } else {
-				  	 echo $LbiblioFlds["903a"]->getFieldData(); // nube
+				  	 echo $LbiblioFlds['903a']->getFieldData(); // nube
  			} ?>" target="_blank">  
-                <?php echo substr($LbiblioFlds["903a"]->getFieldData(),0,50);?></a>
+                <?php echo substr($LbiblioFlds['903a']->getFieldData(),0,50);?></a>
      </td>                
 <?php } ?>
         </tr>
@@ -528,9 +528,9 @@ if (isset($LbiblioFlds["903a"])) {  //determina si es material digital?>
   
   
    <img src="
-<?php if (isset($LbiblioFlds["902a"])) {
-			echo $LbiblioFlds["902a"]->getFieldData()  ;
-		} else { //determina si el  file estaa
+<?php if (isset($LbiblioFlds['902a'])) {
+			echo $LbiblioFlds['902a']->getFieldData()  ;
+		} else { //determina si el  file esta
 			$Ruta_File= "../" . COVER_PATH . "/" .  H($biblio->getAuthor())."-".H($biblio->getTitle());
 			if (is_file( $Ruta_File .".jpg")) {
 				echo  $Ruta_File.".jpg";

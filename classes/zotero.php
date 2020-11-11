@@ -9,36 +9,30 @@
 */
 class Document {
   $Document = array(
-      'Id' => md5($bibid . $doc_title),
-      'DocType' => 2, // Book, other types read in openUrl.php
-      'DocTitle' => $doc_title,
-      'JournalTitle' => false,
-      'BookTitle' => $doc_title,
-      'BookPublisher' => $doc_publisher,
-      'PubPlace' => $doc_pubplace,
-      'ISBN' => $doc_isbn,
-      'StartPage' => false,
-      'EndPage' => false,
-      'DocYear' => $doc_pubyear,
-      'DocEdition' => $doc_edition,
-      'ShortTitle' => $doc_stitle,
+      'Id'				=> md5($bibid . $doc_title),
+      'DocType' 		=> 2, // Book, other types read in openUrl.php
+      'DocTitle' 		=> $doc_title,
+      'JournalTitle'	=> false,
+      'BookTitle' 		=> $doc_title,
+      'BookPublisher' 	=> $doc_publisher,
+      'PubPlace' 		=> $doc_pubplace,
+      'ISBN' 			=> $doc_isbn,
+      'StartPage' 		=> false,
+      'EndPage' 		=> false,
+      'DocYear' 		=> $doc_pubyear,
+      'DocEdition' 		=> $doc_edition,
+      'ShortTitle' 		=> $doc_stitle,
    );
   }
 class People {
 
   $People->fields = array(
       'DocRelationship' => 0,
-      'FirstName' => $doc_author_fname,
-      'LastName' => $doc_author_lname,
+      'FirstName' 		=> $doc_author_fname,
+      'LastName' 		=> $doc_author_lname,
       );
   }
 
-
-
-
-
-
- 
 $_Nav_menu = array();
 $_Nav_unparented = array();
 class Nav {

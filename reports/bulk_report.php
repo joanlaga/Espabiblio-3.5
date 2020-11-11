@@ -1,8 +1,8 @@
 <?php
 $tab = "reports";
-if ($_GET['type'] == 'manual') 
+if (@$_GET['type'] == 'manual') 
   $nav = "BulkLookupManual";
-else if ($_GET['type'] == 'cover')
+else if (@$_GET['type'] == 'cover')
   $nav = "BulkLookupCover";
 else
   $nav = "BulkLookup";
@@ -16,10 +16,10 @@ $navLoc = new Localize(OBIB_LOCALE, 'navbars');
 
 require_once("../classes/BulkLookup.php");
 
-if (!($_GET['type'] == 'manual' && $_GET['act'] == "export")) 
+if (!(@$_GET['type'] == 'manual' && @$_GET['act'] == "export")) 
 require_once("../shared/header.php");
 
-switch ($_GET['type']) {
+switch (@$_GET['type']) {
   case 'cover':
 ?>
 <h1><?php echo $navLoc->getText('reportsNoCover'); ?></h1>
@@ -31,8 +31,8 @@ $bl = new BulkLookupQuery();
 // Paging
 $total = $bl->countQueue('cover_list');
 $limit = 50;
-if (0 + $_GET['page'] < 1 || ($p-1) * $limit >= $total) $p = 1;
-else $p = 0 + $_GET['page'];
+if (0 + @$_GET['page'] < 1 || ($p-1) * $limit >= $total) $p = 1;
+else $p = 0 + @$_GET['page'];
 $bl->getNoCoverList($limit, ($p-1) * $limit);
 
 $rows = array();
@@ -56,6 +56,8 @@ foreach ($rows as $row) {
 </table>
 <?php
 // Paging link
+$prev = '';
+$next = '';
 if ($p > 1) $prev = "<a href=\"?type=cover&page=".($p-1)."\">Previous</a>";
 if ($p * $limit < $total) $next = "<a href=\"?type=cover&page=".($p+1)."\">Next</a>";
 
@@ -65,15 +67,15 @@ echo $prev . ($prev && $next ? ' | ' : '') . $next;
 <?php
     break;
   case 'manual':
-    if ($_GET['act'] == 'cleartemp') {
+    if (@$_GET['act'] == 'cleartemp') {
       $bl = new BulkLookupQuery();
       $bl->clearDoneQueue('manual_list');
       $msg = '<h5 id="updateMsg">' . $loc->getText('bulkReportZeroHitsClear') . '</h5>';
-    }
-    else if ($_GET['act'] == 'export') {
+    }else if (@$_GET['act'] == 'export') {
       $bl = new BulkLookupQuery();
       $total = $bl->countQueue('manual_list');
       $bl->getManualList($total);
+
       while ($row = $bl->fetch()) {
         for ($i = 0; $i < $row['hits']; $i++) 
           $f .= $row['isbn'] . "\n";
@@ -83,12 +85,12 @@ echo $prev . ($prev && $next ? ' | ' : '') . $next;
       header("Content-Length: " . strlen($f));
       die($f);
     }
-
+$msg = '';
     if (isset($_GET['del'])) { // Action: del
-      $isbn = $_GET['del'];
+      $isbn = @$_GET['del'];
       $bl = new BulkLookupQuery();
       $bl->removeManualItem($isbn);
-      if (empty($_GET['del']))
+      if (@empty(@$_GET['del']))
         $msg = '<h5 id="updateMsg">' . $loc->getText('bulkReportPurgeDone') . '</h5>';
       else 
         $msg = '<h5 id="updateMsg">' . $loc->getText('bulkReportISBNRemoved', array('isbn' => $isbn)) . '</h5>';
@@ -105,8 +107,8 @@ $bl = new BulkLookupQuery();
 // Paging
 $limit = 50;
 $total = $bl->countQueue('manual_list');
-if (0 + $_GET['page'] < 1 || ($p-1) * $limit >= $total) $p = 1;
-else $p = 0 + $_GET['page'];
+if (0 + @$_GET['page'] < 1 || ($p-1) * $limit >= $total) $p = 1;
+else $p = 0 + @$_GET['page'];
 $bl->getManualList($limit, ($p-1) * $limit);
 
 $rows = array();
@@ -141,6 +143,8 @@ foreach ($rows as $row) {
 
 <?php
 // Paging link
+$prev ='';
+$next ='';
 if ($p > 1) $prev = "<a href=\"?type=manual&page=".($p-1)."\">Previous</a>";
 if ($p * $limit < $total) $next = "<a href=\"?type=manual&page=".($p+1)."\">Next</a>";
 

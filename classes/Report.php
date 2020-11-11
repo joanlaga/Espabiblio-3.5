@@ -27,7 +27,8 @@ class Report {
   var $iter;
   var $cache;
   var $pointer = 0;
-  function link($name, $msg='', $tab='') {
+  
+  static function link($name, $msg='', $tab='') {
     $urls = array(
       'Report'=>'../reports/run_report.php?type=previous&msg=',
       'BiblioSearch'=>'../shared/biblio_search.php?searchType=previous&msg=',
@@ -43,13 +44,13 @@ class Report {
     }
     return $url;
   }
-  function create_e($type, $name=NULL) {
+  static function create_e($type, $name=NULL) {
     $cache = array('type'=>$type);
     $rpt = new Report;
     $err = $rpt->_load_e($name, $cache);
     return array($rpt, $err);
   }
-  function load($name) {
+  static function load($name) {
     if (!isset($_SESSION['rpt_'.$name])) {
       return NULL;
     }
@@ -61,7 +62,7 @@ class Report {
     }
     return $rpt;
   }
-  function _load_e($name, $cache) {
+   function _load_e($name, $cache) {
     $this->name = $name;
     assert('preg_match("/^[-_\/A-Za-z0-9]+\$/", $cache["type"])');
     $fname = '../reports/defs/'.$cache['type'];
@@ -80,13 +81,13 @@ class Report {
     }
     return NULL;
   }
-  function _load_php_e($type, $fname) {
+   function _load_php_e($type, $fname) {
     $classname = $type.'_rpt';
     include_once($fname);
     $this->rpt = new $classname;
     return NULL;		# Can't error non-fatally
   }
-  function _load_rpt_e($type, $fname) {
+   function _load_rpt_e($type, $fname) {
     require_once('../classes/Rpt.php');
     $rpt = new Rpt;
     $err = $rpt->load_e($fname);
@@ -96,28 +97,28 @@ class Report {
       $this->rpt = $rpt;
     }
   }
-  function type() {
+   function type() {
     return $this->cache['type'];
   }
-  function title() {
+   function title() {
     return $this->rpt->title();
   }
-  function category() {
+   function category() {
     return $this->rpt->category();
   }
-  function layouts() {
+   function layouts() {
     return $this->rpt->layouts();
   }
-  function paramDefs() {
+   function paramDefs() {
     return $this->rpt->paramDefs();
   }
-  function columns() {
+   function columns() {
     return $this->rpt->columns();
   }
-  function columnNames() {
-    return array_map(create_function('$x', 'return $x["name"];'), $this->columns());
+   function columnNames() {
+    return array_map(@create_function('$x', 'return $x["name"];'), $this->columns()); # FIXME create_function depreciada en php 7.2.
   }
-  function init_el($params) {
+   function init_el($params) {
     assert('is_array($params)');
     $p = new Params;
     $errs = $p->load_el($this->rpt->paramDefs(), $params);
@@ -126,7 +127,7 @@ class Report {
     }
     return $this->_init_el($p);
   }
-  function initCgi_el($prefix='rpt_') {
+   function initCgi_el($prefix='rpt_') {
     $p = new Params;
     $errs = $p->loadCgi_el($this->rpt->paramDefs(), $prefix);
     if (!empty($errs)) {
@@ -134,14 +135,14 @@ class Report {
     }
     return $this->_init_el($p);
   }
-  function _init_el($params) {
+   function _init_el($params) {
     unset($this->cache['params']);
     $this->params = $params;
     $this->cache['params'] = $params->dict;
     $this->_save();
     return array();
   }
-  function variant_el($newParams, $newName=NULL) {
+   function variant_el($newParams, $newName=NULL) {
     assert('is_array($this->cache["params"])');
     if ($newName === NULL) {
       $newName = $this->name;
@@ -162,21 +163,21 @@ class Report {
     }
     return array($rpt, array());
   }
-  function curPage() {
+   function curPage() {
     if (isset($this->cache['page']) and $this->cache['page']) {
       return $this->cache['page'];
     } else {
       return 1;
     }
   }
-  function _getIter() {
+   function _getIter() {
     if (isset($this->iter) && $this->iter) {
       return;
     } else {
       $this->iter = new NumberedIter($this->rpt->select($this->params));
     }
   }
-  function count() {
+   function count() {
     if (!isset($this->cache['count']) || $this->cache['count'] === NULL) {
       $this->_getIter();
       $this->cache['count'] = $this->iter->count();
@@ -184,11 +185,11 @@ class Report {
     }
     return $this->cache['count'];
   }
-  function each() {
+   function each() {
     $this->_getIter();
     return $this->iter->next();
   }
-  function row($num) {
+   function row($num) {
     if (isset($this->cache['rows'][$num])) {
       return $this->cache['rows'][$num];
     }
@@ -200,7 +201,7 @@ class Report {
       return NULL;
     }
   }
-  function _cacheSlice($skip, $len=OBIB_ITEMS_PER_PAGE) {
+   function _cacheSlice($skip, $len=OBIB_ITEMS_PER_PAGE) {
     $first = min($skip, $this->count()-1);
     $last = min($skip+$len-1, $this->count()-1);
     if (isset($this->cache['rows'])
@@ -217,15 +218,15 @@ class Report {
     }
     $this->_save();
   }
-  function _cachePage($page) {
+   function _cachePage($page) {
     $this->_cacheSlice(($page-1)*OBIB_ITEMS_PER_PAGE);
   }
-  function _save() {
+   function _save() {
     if ($this->name) {
       $_SESSION['rpt_'.$this->name] = $this->cache;
     }
   }
-  function table($table=NULL, $doCols=true) {
+   function table($table=NULL, $doCols=true) {
     if (!$table) {
       require_once('../classes/Table.php');
       $table = new Table;
@@ -243,7 +244,7 @@ class Report {
     }
     $table->end();
   }
-  function pageTable($page, $table=NULL, $doCols=true) {
+   function pageTable($page, $table=NULL, $doCols=true) {
     if (!isset($this->cache['page']) or $page != $this->cache['page']) {
       $this->cache['page'] = $page;
       $this->_save();
@@ -266,7 +267,7 @@ class Report {
     }
     $table->end();
   }//hasta aqui termina la version 7.1
-  function preloadTable($table=NULL, $doCols=true) {
+   function preloadTable($table=NULL, $doCols=true) {
     if (!$table) {
       require_once('../classes/Table.php');
       $table = new Table;
@@ -279,7 +280,7 @@ class Report {
                                'rpt_colnames'=>$this->columnNames()));
     }
   }
-  function getTableRow($table) {
+   function getTableRow($table) {
     if (($row = $this->each()) !== NULL) {
       $table->row($row);
       return $table->getData();

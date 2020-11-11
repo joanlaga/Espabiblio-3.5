@@ -33,6 +33,7 @@ class Error {
     parent::Error($msg);
     $this->field = $field;
   }
+  
   static function listExtract($errors) {
     $msgs = array();
     $l = array();
@@ -49,6 +50,7 @@ class Error {
     }
     return array($msg, $l);
   }
+  
   static function backToForm($url, $errors) {
     list($msg, $fielderrs) = FieldError::listExtract($errors);
     $_SESSION["postVars"] = mkPostVars();
@@ -75,6 +77,7 @@ class DbError extends Error {
     $this->msg = $msg;
     $this->dberror = $dberror;
   }
+
   function toStr() {
     $s = $this->msg.': '.$this->dberror;
     if ($this->sql) {
@@ -87,14 +90,15 @@ class DbError extends Error {
 /* Fatal Errors */
 class Fatal {
   /* Override default behaviour, e.g. for supressing errors, unit testing, etc. */
-  function setHandler(&$obj) {
+  static function setHandler(&$obj) {
     global $_Error_FatalHandler;
     $old =& $_Error_FatalHandler;
     $_Error_FatalHandler = $class;
     return $old;
   }
+
   /* "Can't happen" states */
-  function internalError($msg) {
+  static function internalError($msg) {
     global $_Error_FatalHandler;
     if (method_exists($_Error_FatalHandler, 'internalError')) {
       $_Error_FatalHandler->internalError($msg);
@@ -102,8 +106,9 @@ class Fatal {
       Fatal::error('Internal Error: '.$msg);
     }
   }
+
   /* Query errors */
-  function dbError($sql, $msg, $dberror) {
+  static function dbError($sql, $msg, $dberror) {
     global $_Error_FatalHandler;
     if (method_exists($_Error_FatalHandler, 'dbError')) {
       $_Error_FatalHandler->dbError($sql, $msg, $dberror);
@@ -111,8 +116,9 @@ class Fatal {
       Fatal::error('Database Error: '.$msg.' in query: '.$sql.' DBMS says: '.$dberror);
     }
   }
+
   /* Generic */
-  function error($msg) {
+  static function error($msg) {
     global $_Error_FatalHandler;
     if (method_exists($_Error_FatalHandler, 'error')) {
       $_Error_FatalHandler->error($msg);
@@ -124,6 +130,7 @@ class Fatal {
 
 /* error is the only required method */
 class FatalHandler {
+  
   /* FIXME - Internationalize this stuff */
   function internalError($msg) {
     echo "<h1>Internal Error - You've Probably Found a Bug</h1>\n";
@@ -132,6 +139,7 @@ class FatalHandler {
     $this->printBackTrace();
     exit(1);
   }
+  
   function dbError($sql, $msg, $dberror) {
     echo "<h1>Database Query Error - You've Probably Found a Bug</h1>\n";
     echo "<h2>".H($msg)."</h2>\n";
@@ -141,13 +149,15 @@ class FatalHandler {
     $this->printBackTrace();
     exit(1);
   }
+  
   function error($msg) {
     echo "<h1>Fatal Error</h1>\n";
     echo "<h2>".H($msg)."</h2>\n";
     $this->printBackTrace();
     exit(1);
   }
-  function printBackTrace() {
+
+  static function printBackTrace() {
     if (function_exists('debug_backtrace')) {
       echo "<h2>Debug Backtrace (most recent call first):</h2>\n";
       echo '<pre>';

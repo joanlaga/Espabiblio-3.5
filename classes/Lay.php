@@ -3,7 +3,7 @@
  * See the file COPYRIGHT.html for more details.
  */
  
-require_once("../classes/PDF.php");
+require_once('../classes/fpdf182/fpdf.php'); //se actualiza para soporte php 7
 
 /*** Elements ***/
 class Lay_Spacer {
@@ -649,7 +649,7 @@ class Lay {
       assert('!$err');	# FIXME
       $paper[1] = $l;
     }
-    $this->display = new PDF($paper, $orientation);
+    $this->display = new FPDF($paper, $orientation);
     $this->current = new Lay_Top_Container($this->display);
     $this->fonts = array(array('Times-Roman', 12));
   }
@@ -722,7 +722,7 @@ class Lay {
       switch ($type) {
       case 'x-length':
       case 'y-length':
-        list($len, $err) = $this->lengthToPoints($p[$name], $type{0});
+        list($len, $err) = $this->lengthToPoints($p[$name], $type[0]);
         $p[$name] = $len;
         break;
       case 'x-align':
@@ -732,8 +732,8 @@ class Lay {
         $atypes['y'] = array('top', 'bottom');
         $atypes['both'] = array('center', 'justify', 'strict-justify', 'baseline');
         if (!in_array($p[$name], $atypes['both'])
-            and !in_array($p[$name], $atypes[$type{0}])) {
-          $err = 'invalid '.$type{0}.' alignment type';
+            and !in_array($p[$name], $atypes[$type[0]])) {
+          $err = 'invalid '.$type[0].' alignment type';
         }
         break;
       case 'boolean':

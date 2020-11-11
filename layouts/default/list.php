@@ -6,6 +6,7 @@
 require_once('../classes/Lay.php');
 
 class Layout_list {
+
   function render($rpt) {
     $cols = $rpt->columns();
     $colspacing = 0.125;

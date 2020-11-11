@@ -47,8 +47,10 @@ class Query {
                                        mysqli_error($link)));
       }
 
-      // UTF-8 support.
-      @mysqli_query("SET NAMES utf8");
+      /* Set custom  */ 
+      # FIXME ver forma de integrar en ajustes lado usario
+      mysqli_query($link, 'SET NAMES utf8'); // Ajuste por fallo en mySQL requerido para interpretar como utf8
+      mysqli_query($link, "SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))"); // Ajuste por fallo en mySQL 
     }
     return array($link, NULL);
   }
@@ -94,11 +96,10 @@ class Query {
       Fatal::internalError('Tried to make database query before connection.');
     }
     //$r = mysqli_query($this->_link,$sql )  or die ("Problema con: ".mysqli_error($this->_link));
-       $r = mysqli_query($this->_link,$sql ) ;
-    
+       $r = mysqli_query($this->_link, $sql) ;
     
     if ($r === false) {
-    //  Fatal::dbError($sql, 'Database query failed', mysqli_error($this->_link));
+      Fatal::dbError($sql, 'Database query failed', mysqli_error($this->_link)); # FIXME revisar si es static o no.
     }
     return $r;
   }
@@ -282,13 +283,13 @@ class Query {
     return $SQL;
   }
   
-  function _ident($i) {
+  static function _ident($i) {
     # Because the mysqli manual is unclear on how to include a ` in a `-quoted
     # identifer, we just drop them.  The manual does not say whether backslash
     # escapes are interpreted in quoted identifiers, so I assume they are not.
     return str_replace('`', '', $i);
   }
-  function _numstr($n) {
+  static function _numstr($n) {
     if (preg_match("/^([+-]?[0-9]+(\.[0-9]*)?([Ee][0-9]+)?)/", $n, $subs)) {
       return $subs[1];
     } else {
@@ -301,10 +302,10 @@ class Query {
    * it.  This will be removed as soon as I get time to
    * update everything that depends on this stuff.
    */
-  function connect($conn=false) {
+  static function connect($conn=false) {
     return true;
   }
-  function close() {
+  static function close() {
     return true;
   }
   function _exec($sql) {
@@ -332,16 +333,16 @@ class Query {
     $this->_conn = new DbOld($r, $this->getInsertId());
     return $r;
   }
-  function _checkSubQuery(&$q, $result) {
+  static function _checkSubQuery(&$q, $result) {
     return $result;
   }
   function resetResult() {
     $this->_conn->resetResult();
   }
-  function clearErrors() {
+  static function clearErrors() {
     return;
   }
-  function errorOccurred() {
+  static function errorOccurred() {
     return false;
   }
   function getError() {
@@ -351,13 +352,13 @@ class Query {
       return "";
     }
   }
-  function getDbErrno() {
+  static function getDbErrno() {
     return 0;
   }
-  function getDbError() {
+  static function getDbError() {
     return "";
   }
-  function getSQL() {
+  static function getSQL() {
     return "";
   }
 }
