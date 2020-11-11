@@ -59,7 +59,7 @@ class DmQuery extends Query {
   }
 
   function getCheckoutStats($mbrid) {
-    $MySQLn = explode('.', implode('', explode('-', mysql_get_server_info())));
+    $MySQLn = explode('.', implode('', explode('-', mysqli_get_server_info($this->_link))));
     if ($MySQLn[0] < '5') {
         $cmd = 'type=heap';
     } else {
@@ -84,31 +84,6 @@ class DmQuery extends Query {
                         . "privs.checkout_limit, privs.renewal_limit ", $mbrid);
     return array_map(array($this, '_mkObj'), $this->exec($sql));
   }
-
-
-/*
-  function getCheckoutStats($mbrid) {
-    $sql = $this->mkSQL("create temporary table mbrout type=heap "
-                        . "select b.material_cd, c.bibid, c.copyid "
-                        . "from biblio_copy c, biblio b "
-                        . "where c.mbrid=%N and b.bibid=c.bibid ", $mbrid);
-    $this->exec($sql);
-    $sql = $this->mkSQL("select mat.*, "
-                        . "ifnull(privs.checkout_limit, 0) checkout_limit, "
-                        . "ifnull(privs.renewal_limit, 0) renewal_limit, "
-                        . "count(mbrout.copyid) row_count "
-                        . "from material_type_dm mat join member "
-                        . "left join checkout_privs privs "
-                        . "on privs.material_cd=mat.code "
-                        . "and privs.classification=member.classification "
-                        . "left join mbrout on mbrout.material_cd=mat.code "
-                        . "where member.mbrid=%N "
-                        . "group by mat.code, mat.description, mat.default_flg, "
-                        . "privs.checkout_limit, privs.renewal_limit ", $mbrid);
-    return array_map(array($this, '_mkObj'), $this->exec($sql));
-  }
-*/
-
 
   function _mkObj($array) {
     $dm = new Dm();

@@ -3,16 +3,16 @@
  * See the file COPYRIGHT.html for more details.
  */
  // modificado para mostrar imagen portada joanlaga@hotmail.com
-define("OBIB_TEXT_CNTRL", "0");
-define("OBIB_TEXTAREA_CNTRL", "1");
-define("OBIB_FILE_CNTRL", "2");
-define("OBIB_FILE_CNTRLC", "3");
-define("OBIB_FILE_CNTRLD", "4");
-define("OBIB_FILE_CNTRLA", "5");
-define("OBIB_FILE_CNTRLS", "6");
-define("OBIB_FILE_CNTRLB", "7");
-define("OBIB_FILE_CNTRLK", "8");
-define("OBIB_FILE_CNTRLF", "9");//9-11-2020
+define('OBIB_TEXT_CNTRL',       '0');
+define('OBIB_TEXTAREA_CNTRL',   '1');
+define('OBIB_FILE_CNTRL',       '2');
+define('OBIB_FILE_CNTRLC',      '3');
+define('OBIB_FILE_CNTRLD',      '4');
+define('OBIB_FILE_CNTRLA',      '5');
+define('OBIB_FILE_CNTRLS',      '6');
+define('OBIB_FILE_CNTRLB',      '7');
+define('OBIB_FILE_CNTRLK',      '8');
+define('OBIB_FILE_CNTRLF',      '9');//9-11-2020
 
    // modificado para mostrar imagen portada
 /*********************************************************************************
@@ -32,10 +32,10 @@ define("OBIB_FILE_CNTRLF", "9");//9-11-2020
  * @access public
  *********************************************************************************
  */
-function printUsmarcInputText($tag,$subfieldCd,$required,&$postVars,&$pageErrors,&$marcTags,&$marcSubflds,$showTagDesc,$cntrlType,$occur=""){
+function printUsmarcInputText($tag,$subfieldCd,$required,&$postVars,&$pageErrors,&$marcTags,&$marcSubflds,$showTagDesc,$cntrlType,$occur=''){
 
-  require_once("../classes/Localize.php");
-  $shareloc = new Localize(OBIB_LOCALE, "shared");
+  require_once('../classes/Localize.php');
+  $shareloc = new Localize(OBIB_LOCALE, 'shared');
 
   $arrayIndex = sprintf("%03d",$tag).$subfieldCd;
   $formIndex = $arrayIndex.$occur;
@@ -44,31 +44,38 @@ function printUsmarcInputText($tag,$subfieldCd,$required,&$postVars,&$pageErrors
   $cols = 35;
   $rows = 4;
 
-  if (!isset($postVars)) {
-    $value = "";
-  } elseif (!isset($postVars['values'][$formIndex])) {
-      $value = "";
-  } else {
+  if (!isset($postVars)) 
+    $value = '';
+   elseif (!isset($postVars['values'][$formIndex])) 
+      $value = '';
+   else 
       $value = $postVars['values'][$formIndex];
-  }
-  if (!isset($postVars['fieldIds'])) {
-    $fieldId = "";
-  } elseif (!isset($postVars['fieldIds'][$formIndex])) {
-      $fieldId = "";
-  } else {
+  
+
+  if (!isset($postVars['fieldIds'])) 
+    $fieldId = '';
+   elseif (!isset($postVars['fieldIds'][$formIndex])) 
+      $fieldId = '';
+   else 
       $fieldId = $postVars['fieldIds'][$formIndex];
-  }
-  if (!isset($pageErrors)) {
-    $error = "";
-  } elseif (!isset($pageErrors[$formIndex])) {
-      $error = "";
-  } else {
+  
+
+  if (!isset($pageErrors)) 
+    $error = '';
+   elseif (!isset($pageErrors[$formIndex])) 
+      $error = '';
+   else 
       $error = $pageErrors[$formIndex];
-  }
+
+      
   echo "<tr><td class=\"primary form-required\" valign=\"top\">\n";
+
   if ($required) {
     echo "<sup>*</sup> ";
   }
+
+  
+  
   if (($showTagDesc) 
     && (isset($marcTags[$tag]))
     && (isset($marcSubflds[$arrayIndex]))){
@@ -78,7 +85,7 @@ function printUsmarcInputText($tag,$subfieldCd,$required,&$postVars,&$pageErrors
 //    echo $subfieldSet[0] . ' ' . H($marcTags[$tag]->getDescription());// muestra prefijo
     echo  ' ; ' . H($marcTags[$tag]->getDescription());
 //    echo ' - ' . $subfieldSet[1];
-//    echo " - " .  H($marcTags[$tag]->getDescription());//test
+//    echo ' - ' .  H($marcTags[$tag]->getDescription());//test
     echo " - (".H($marcSubflds[$arrayIndex]->getDescription()).")";//test
   } elseif (isset($marcSubflds[$arrayIndex])){
   echo  $tag . $subfieldCd . ' ' ;//muestra los indices de campos MARC
@@ -86,8 +93,8 @@ function printUsmarcInputText($tag,$subfieldCd,$required,&$postVars,&$pageErrors
     echo  ' ; ' . H($marcTags[$tag]->getDescription());
     echo " - (".H($marcSubflds[$arrayIndex]->getDescription()).")";//test
   }
-  if ($occur != "") {
-    echo " ".H($occur+1);
+  if ($occur != '') {
+    echo ' ' . H($occur + 1);
   }
   echo ":\n</td>\n";
   echo "<td valign=\"top\" class=\"primary\">\n";

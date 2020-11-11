@@ -19,21 +19,16 @@ require_once('../shared/common.php');
   $tab = 'cataloging';
   $helpPage = 'biblioSearch';
   $lookup = 'N';
-//jalg modificado para busquedas aisladas de autores entre administrador y opac 10/jul/2013
-  if (isset($_POST['tab']) || isset($_GET['tab'])) {
-    if (isset($_POST['tab'])) {
-      $tab = $_POST['tab'];
-    }
-    if (isset($_GET['tab'])) {
-      $tab = $_GET['tab'];
-    }
+
+  if (isset($_REQUEST['tab']) || isset($_REQUEST['tab'])) {
+      $tab = $_REQUEST['tab'];
   }
-//jalg modificado para busquedas aisladas de autores entre administrador y opac 10/jul/2013
+  
   if (isset($_POST['lookup'])) {
-    $lookup = $_POST['lookup'];
-    if ($lookup == 'Y') {
-      $helpPage = 'opacLookup';
-    }
+        $lookup = $_POST['lookup'];
+        if ($lookup == 'Y') {
+            $helpPage = 'opacLookup';
+        }
   }
 
   $nav = 'search';
@@ -41,6 +36,7 @@ require_once('../shared/common.php');
   if ($tab != 'opac') {
     require_once('../shared/logincheck.php');
   }
+  
   require_once('../classes/BiblioSearch.php');
   require_once('../classes/BiblioSearchQuery.php');
   require_once('../classes/BiblioFieldQuery.php');
@@ -53,6 +49,7 @@ echo '<pre>';
 print_r($_REQUEST);
 echo '</pre>';
 */
+
   #****************************************************************************
   #*  Function declaration only used on this page.
   #****************************************************************************

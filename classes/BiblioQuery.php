@@ -127,9 +127,6 @@ class BiblioQuery extends Query {
       $subfieldCd = substr($key, 3, 1);
       $subfieldIdx = '';
       
-//var_dump($key);      
-#FIXME            if (count($key) > 4) {
-            	
       if (@count($key) > 4) {
         $index = substr($key, 4);
       }

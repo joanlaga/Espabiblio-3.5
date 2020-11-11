@@ -19,6 +19,7 @@
 
   $Document = new stdClass;
  
+
   $Document->fields = array(
       'Id' 					=> md5($bibid . $doc_title),
       'DocType' 			=> 2, // Book, other types read in openUrl.php
